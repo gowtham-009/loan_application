@@ -250,7 +250,7 @@ const handleSubmit2 = async () => {
     const newuser_formdata=async()=>{
       loading.value=true;
       error.value=null
-      const newuser1_apiurl='http://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
+      const newuser1_apiurl='https://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
       const formdata=new FormData()
       formdata.append('Mobilenum',mobile_no.value);
       formdata.append('ProofType',selectedOption.value);
@@ -286,7 +286,7 @@ const handleSubmit2 = async () => {
     const update_form=async()=>{
       loading.value=true;
       error.value=null
-      const newuser1_apiurl='http://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
+      const newuser1_apiurl='https://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
       const formdata=new FormData()
       formdata.append('Mobilenum',mobile_no.value);
       formdata.append('ProofType',selectedOption.value);
@@ -352,7 +352,7 @@ let decryptedId = "";
     const getimage=ref('')
     const getdatauser=async()=>{
       loading.value=true
-      const apiurl='http://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
+      const apiurl='https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
       const formdata=new FormData()
       formdata.append('appid', decryptedId)
       try {
