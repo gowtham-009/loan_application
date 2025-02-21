@@ -230,7 +230,7 @@ onBeforeMount(() => {
 
     const getdatauser=async()=>{
       loading.value=true
-      const apiurl='http://localhost/loan%20db/getuser_data.php'
+      const apiurl='http://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
       const formdata=new FormData()
       formdata.append('appid',  route.query.value)
       try {
@@ -286,7 +286,7 @@ const newuser2_formdata = async () => {
   loading.value = true;
   error.value = null;
 
-  const newuser2_apiurl = 'http://localhost/loan%20db/newuser2_insert.php';
+  const newuser2_apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/newuser2_insert.php';
   const formdata = new FormData();
 
   // Append form fields

@@ -178,7 +178,7 @@ const loading=ref(false);
   const getdata=async()=>{
     loading.value=true
     error.value=null
-    const apiurl_loan='http://localhost/loan%20db/loan_getdata.php'
+    const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/loan_getdata.php'
     const formdata_loan=new FormData()
     formdata_loan.append('loanid', decryptedId)
     try {
@@ -226,7 +226,7 @@ const loading=ref(false);
   const delete_Data=async()=>{
     loading.value=true
     error.value=null
-    const apiurl_loan='http://localhost/loan%20db/loandata_delete.php'
+    const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/loandata_delete.php'
     const formdata_loan=new FormData()
     formdata_loan.append('loanid', decryptedId)
     try {

@@ -206,7 +206,7 @@ onBeforeMount(() => {
       loading_edit.value = true;
       error_edit.value = null;
       const update_formdata = new FormData();
-      const update_api = 'http://localhost/loan%20db/interest_update.php';
+      const update_api = 'http://vaanam.w3webtechnologies.co.in/loandb/interest_update.php';
       update_formdata.append('interestid', updateId.value);
 
       try {
@@ -256,7 +256,7 @@ onBeforeMount(() => {
         update_form_data.append('DiscountPeriod', discount.value)
         update_form_data.append('DiscountInterest',discount_intrest.value)
         update_form_data.append('ElevatedInterest', el_intrest.value)
-        const update_apiurl='http://localhost/loan%20db/update_insert.php'
+        const update_apiurl='http://vaanam.w3webtechnologies.co.in/loandb/update_insert.php'
         try{
             const update_response=await fetch(update_apiurl,{
               method:'POST',

@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
 const balance_check = async () => {
   loading.value = true;
   error.value = null;
-  const balancecheck_api = 'http://localhost/loan%20db/balance.php';
+  const balancecheck_api = 'http://vaanam.w3webtechnologies.co.in/loandb/balance.php';
   const formdata = new FormData();
   formdata.append('date', formattedDate);
   formdata.append('thousand_2', notes1.value);
@@ -371,7 +371,7 @@ const balance=ref('')
 const previous_total_balance=async()=>{
   loading_bal.value=true
   error_bal.value=null
-  const bal_apiurl='http://localhost/loan%20db/get_previous_total.php'
+  const bal_apiurl='http://vaanam.w3webtechnologies.co.in/loandb/get_previous_total.php'
   
   try{
     const response_balance=await fetch(bal_apiurl,{

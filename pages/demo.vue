@@ -458,7 +458,7 @@
         }
     
         const loansearchpp = async () => {
-          const apiurl = 'http://localhost/loan%20db/get_loanrow.php';
+          const apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/get_loanrow.php';
           const formdata = new FormData();
           formdata.append('loannumber', decryptedId);
     
@@ -496,7 +496,7 @@
         };
     
         const interestval = async (loanData) => {
-          const apiurl = 'http://localhost/loan%20db/calculate_condition.php';
+          const apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/calculate_condition.php';
           const formdata = new FormData();
           formdata.append('loantype', loanData[0].Loan_Type);
           formdata.append('loanvalue', loanData[0].Loan_Value);

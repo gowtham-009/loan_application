@@ -538,7 +538,7 @@ onBeforeMount(() => {
       loading.value = true;
       error.value = null;
 
-      const apiurl = 'http://localhost/loan%20db/interest.php';
+      const apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/interest.php';
       const formData = new FormData();
       formData.append('Loan_type1', addselectedOption.value);
       formData.append('LowLimit', lower_l.value);
@@ -591,7 +591,7 @@ const isValid = ref(false);
 const setdata = async()=>{
   loading_d.value = true;
       error_d.value = null;
-      const apiurl_d = 'http://localhost/loan%20db/setting_get.php';
+      const apiurl_d = 'http://vaanam.w3webtechnologies.co.in/loandb/setting_get.php';
       try {
         const response_d = await fetch(apiurl_d, {
           method: 'GET',
@@ -628,7 +628,7 @@ const error_u=ref(null)
 const updatedata = async()=>{
   loading_u.value=true
   error_u.value=null
-  const apiurl_u = 'http://localhost/loan%20db/setting.php';
+  const apiurl_u = 'http://vaanam.w3webtechnologies.co.in/loandb/setting.php';
   const updateformdata = new FormData();
       updateformdata.append('ExtraDays', otselectedOption.value);
       updateformdata.append('AdvanceMonths', month.value);
@@ -671,7 +671,7 @@ const search_filter_data = async () => {
       loading_search.value = true;
       error_search.value = null;
 
-      const apiurl_search = 'http://localhost/loan%20db/limitsvalue.php';
+      const apiurl_search = 'http://vaanam.w3webtechnologies.co.in/loandb/limitsvalue.php';
 
       try {
         const response_search = await fetch(apiurl_search, {
@@ -715,7 +715,7 @@ const search_filter_data = async () => {
         formdatafilter.append('upper_limit', selectedUpperLimit.value);
       }
 
-      const apiurlf = 'http://localhost/loan%20db/filter.php';
+      const apiurlf = 'http://vaanam.w3webtechnologies.co.in/loandb/filter.php';
       try {
         const responsef = await fetch(apiurlf, {
           method: 'POST',
@@ -744,7 +744,7 @@ const search_filter_data = async () => {
       error_del.value=null
       const deleteform=new FormData();
       deleteform.append('interestid',selectedId.value)
-      const deleteapi='http://localhost/loan%20db/interest_delete.php'
+      const deleteapi='http://vaanam.w3webtechnologies.co.in/loandb/interest_delete.php'
 
       try{
         const del_res= await fetch(deleteapi,{

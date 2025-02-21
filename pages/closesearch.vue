@@ -468,7 +468,7 @@ onBeforeMount(() => {
       const datauser=ref([])
       const userdata=async()=>{
         loading.value=true
-        const apiurl='http://localhost/loan%20db/getlastdata_close.php'
+        const apiurl='http://vaanam.w3webtechnologies.co.in/loandb/getlastdata_close.php'
         
         
         try {
@@ -501,7 +501,7 @@ onBeforeMount(() => {
   
         show.value=true
         loading.value=true
-        const apiurl_loan='http://localhost/loan%20db/loansearchdata_close.php'
+        const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/loansearchdata_close.php'
         const formdata_loan=new FormData()
         formdata_loan.append('mobilenumber', mobile.value)
         formdata_loan.append('place', place.value)
@@ -560,7 +560,7 @@ onBeforeMount(() => {
       list.value=false
       show.value=true
         loading.value=true
-        const apiurl_loan='http://localhost/loan%20db/loansearchdata_close.php'
+        const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/loansearchdata_close.php'
         const formdata_loan=new FormData()
         formdata_loan.append('name', name2.value)
         formdata_loan.append('place', place2.value)
@@ -621,7 +621,7 @@ onBeforeMount(() => {
       list.value=false
       show.value=true
         loading.value=true
-        const apiurl_loan='http://localhost/loan%20db/loansearchdata_close.php'
+        const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/loansearchdata_close.php'
         const formdata_loan=new FormData()
         formdata_loan.append('prooftype', selectedOption.value)
         formdata_loan.append('proofid', idnumber.value)

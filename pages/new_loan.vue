@@ -298,7 +298,7 @@ const loanid=ref()
 
 const getloannumber=async()=>{
    
-    const apiurl_loan='http://localhost/loan%20db/getloan_number.php'
+    const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/getloan_number.php'
    
     
 
@@ -407,7 +407,7 @@ const handleButtonClick = () => {
   const postdata_loan=async()=>{
     loading.value=true
     error.value=null
-    const apiurl_loan='http://localhost/loan%20db/loan_update.php'
+    const apiurl_loan='http://vaanam.w3webtechnologies.co.in/loandb/loan_update.php'
     const formdata_loan=new FormData()
     formdata_loan.append('appid', decryptedAppId.value)
     formdata_loan.append('loannumber', sfa.value)
