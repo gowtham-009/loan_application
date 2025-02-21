@@ -328,7 +328,7 @@ onBeforeMount(() => {
     const getuserdata=async()=>{
       loading.value=true
       error.value=null
-      const apiurl='http://vaanam.w3webtechnologies.co.in/loandb/getlastdata_user.php'
+      const apiurl='https://vaanam.w3webtechnologies.co.in/loandb/getlastdata_user.php'
     
 
       try {
@@ -357,7 +357,7 @@ onBeforeMount(() => {
       list.value=false
       loading.value=true
       error.value=null
-      const apiurl='http://vaanam.w3webtechnologies.co.in/loandb/search_filter.php'
+      const apiurl='https://vaanam.w3webtechnologies.co.in/loandb/search_filter.php'
       const formdata=new FormData()
       formdata.append('mobilenumber', mobile.value)
 
@@ -389,7 +389,7 @@ onBeforeMount(() => {
       list.value=false
       loading.value=true
       error.value=null
-      const np_apiurl='http://vaanam.w3webtechnologies.co.in/loandb/search_filter.php'
+      const np_apiurl='https://vaanam.w3webtechnologies.co.in/loandb/search_filter.php'
       const npformdata=new FormData()
       npformdata.append('name', name.value)
       npformdata.append('place', place.value)
@@ -426,7 +426,7 @@ onBeforeMount(() => {
     list.value=false
   loading.value = true
   error.value = null
-  const proofid_apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/search_filter.php'
+  const proofid_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/search_filter.php'
   const proofformdata = new FormData()
   proofformdata.append('prooftype', selectedOption.value)
   proofformdata.append('proofid', idnumber.value)
