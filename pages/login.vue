@@ -65,7 +65,7 @@ const handleSubmit = async () => {
   usernot_found.value = ''; // Reset error messages
   incorrect_password.value = '';
 
-  const apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/';
+  const apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/index.php';
   const formData = new FormData();
   formData.append('username', userId.value);
   formData.append('password', password.value);
