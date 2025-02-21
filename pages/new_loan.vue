@@ -405,6 +405,7 @@ const handleButtonClick = () => {
   const loading=ref(false);
   const error=ref(null)
   const postdata_loan=async()=>{
+    alert('hi')
     loading.value=true
     error.value=null
     const apiurl_loan='https://vaanam.w3webtechnologies.co.in/loandb/loan_update.php'
@@ -447,7 +448,7 @@ const handleButtonClick = () => {
   const secretKey = "loanidmust123"; // Use a strong secret key
   const encryptedId = CryptoJS.AES.encrypt(id, secretKey).toString();
 
-  // Navigate to page2.vue with the encrypted ID
+ 
   router.push({ path: "/summary", query: { encryptedId } });
 }
     return {
