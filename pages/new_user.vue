@@ -390,7 +390,7 @@ let decryptedId = "";
 
       const getFormattedDateTime = () => {
   const date = new Date();
-  const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); // dd-mm-yyyy
+  const formattedDate = date.toISOString().split('T')[0]; // dd-mm-yyyy
   const formattedTime = date.toLocaleTimeString('en-GB', { hour12: false }); // hh:mm:ss
   return `${formattedDate} ${formattedTime}`;
 };
