@@ -458,7 +458,8 @@ const encrypt = (text) => {
 
 const loandata_post = async (loandata) => {
   const encryptedAppId = encrypt(loandata.App_id);
-
+ 
+ 
   router.push({
     name: 'new_loan',
     query: {

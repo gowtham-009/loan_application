@@ -236,7 +236,7 @@ onBeforeMount(() => {
       { label: 'Silver', value: 'Silver' },
       { label: 'Brass', value: 'Brass' },
     ]);
-    const sfa = ref('');
+    const sfa = ref(1000);
     const weight = ref('');
     const loanvalue=ref('');
 
@@ -348,6 +348,7 @@ const ENCRYPTION_KEY = "loanapp098765";
   });
   
 onMounted(() => {
+
     appid.value=decryptedAppId.value
   if (route.query.enable === 'true') {
 
@@ -405,7 +406,7 @@ const handleButtonClick = () => {
   const loading=ref(false);
   const error=ref(null)
   const postdata_loan=async()=>{
-    alert('hi')
+   
     loading.value=true
     error.value=null
     const apiurl_loan='https://vaanam.w3webtechnologies.co.in/loandb/loan_update.php'
