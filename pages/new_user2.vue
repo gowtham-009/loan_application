@@ -230,7 +230,7 @@ onBeforeMount(() => {
 
     const getdatauser=async()=>{
       loading.value=true
-      const apiurl='http://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
+      const apiurl='https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
       const formdata=new FormData()
       formdata.append('appid',  route.query.value)
       try {
@@ -286,7 +286,7 @@ const newuser2_formdata = async () => {
   loading.value = true;
   error.value = null;
 
-  const newuser2_apiurl = 'http://vaanam.w3webtechnologies.co.in/loandb/newuser2_insert.php';
+  const newuser2_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/newuser2_insert.php';
   const formdata = new FormData();
 
   // Append form fields
@@ -305,7 +305,7 @@ const newuser2_formdata = async () => {
       body: formdata,
     });
 
-    // Check for HTTP error responses
+    // Check for HTTPs error responses
     if (!response.ok) {
       throw new Error('Failed to submit data. Please check your inputs.');
     }
