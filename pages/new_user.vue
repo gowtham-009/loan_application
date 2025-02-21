@@ -1,5 +1,5 @@
 <template>
-  <span>{{currentTime}}</span>
+ 
   <div v-if="isAuthenticated">
     <div class="w-100 bg-blue" :style="{ height: boxex1Height + 'px' }"> </div>
     <div class="w-100" :style="{ height: boxex2Height + 'px' }">
@@ -254,6 +254,8 @@ const handleSubmit2 = async () => {
       error.value=null
       const newuser1_apiurl='https://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
       const formdata=new FormData()
+      currentDateTime
+      formdata.append('datetime',currentDateTime.value);
       formdata.append('Mobilenum',mobile_no.value);
       formdata.append('ProofType',selectedOption.value);
       formdata.append('Proofdetails', proofid.value)
@@ -386,6 +388,14 @@ let decryptedId = "";
       getdatauser()
   
 
+      const getFormattedDateTime = () => {
+  const date = new Date();
+  const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); // dd-mm-yyyy
+  const formattedTime = date.toLocaleTimeString('en-GB', { hour12: false }); // hh:mm:ss
+  return `${formattedDate} ${formattedTime}`;
+};
+
+const currentDateTime = ref(getFormattedDateTime());
 
     const handleventfun=()=>{
       if(decryptedId){
@@ -421,7 +431,8 @@ let decryptedId = "";
       imageshow2,
       getimage,
       retakeimage,
-      currentTime 
+      currentDateTime,
+      getFormattedDateTime
      
     };
   },
