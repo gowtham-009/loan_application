@@ -1,4 +1,5 @@
 <template>
+  <span>{{currentTime}}</span>
   <div v-if="isAuthenticated">
     <div class="w-100 bg-blue" :style="{ height: boxex1Height + 'px' }"> </div>
     <div class="w-100" :style="{ height: boxex2Height + 'px' }">
@@ -184,6 +185,7 @@ export default {
   },
 
   setup() {
+    const currentTime = ref(new Date().toLocaleString());
     const isAuthenticated = ref(false)
 
 onBeforeMount(() => {
@@ -418,8 +420,8 @@ let decryptedId = "";
       imageshow,
       imageshow2,
       getimage,
-      retakeimage
-     
+      retakeimage,
+      currentTime 
      
     };
   },
