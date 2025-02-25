@@ -13,7 +13,7 @@
       <div class="w-100">
 
         <div class="bg-blue d-flex justify-center align-center" :style="{ height: box1Height + 'px' }">
-          <span class="text-h4">New User</span>
+          <span class="text-h5">New User</span>
         </div>
       
         <div class="pa-2 " :style="{ height: box2Height + 'px' }">
@@ -136,7 +136,7 @@ const getFormattedDateTime = () => {
       const date = new Date();
       const formattedDate = date.toISOString().split('T')[0]; // dd-mm-yyyy
       const formattedTime = date.toLocaleTimeString('en-GB', { hour12: false }); // hh:mm:ss
-      return `${formattedDate} ${formattedTime}`;
+      return `${formattedDate}${formattedTime}`;
     };
 
     const currentDateTime = ref(getFormattedDateTime());
