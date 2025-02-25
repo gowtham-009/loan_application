@@ -325,7 +325,7 @@ onBeforeMount(() => {
   const getdata = async () => {
   loading.value = true;
   error.value = null;
-  const apiurl_loan = 'http://vaanam.w3webtechnologies.co.in/loandb/loan_getdata.php';
+  const apiurl_loan = 'https://vaanam.w3webtechnologies.co.in/loandb/loan_getdata.php';
   const formdata_loan = new FormData();
   formdata_loan.append('loanid', decryptedId);
 
@@ -377,7 +377,7 @@ onBeforeMount(() => {
     error.value = null;
 
     const update_form = new FormData();
-    const apiurl = 'http://localhost/loan db/loan_edit_data.php';
+    const apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/loan_edit_data.php';
     update_form.append('loanid', decryptedId);
     update_form.append('loannumber', sfa.value);
     update_form.append('loandate', currentdate.value);

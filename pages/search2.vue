@@ -48,7 +48,7 @@
             </v-alert>
           </div>
              <div v-else class="w-100">
-                <div v-for="datafilter in mobile_data" :key="datafilter.id" class="w-100 cards_filter">
+                <div v-for="datafilter in mobile_data" :key="datafilter.id" class="w-100 cards_filter" style="border: 1px solid red;">
                   <v-sheet class="w-100 pa-2 mt-2 bg-grey-lighten-5">
                     <v-card class="bg-grey-lighten-5 pa-2" variant="tonal">
                       <div class="w-100 d-flex justify-space-between pa-2">
