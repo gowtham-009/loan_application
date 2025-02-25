@@ -286,7 +286,7 @@ const newuser2_formdata = async () => {
 
     // Handle JSON response
     const userdata_res = await response.json();
-    console.log('User data response:', userdata_res);
+    alert('successfully added')
   } catch (err) {
     // Catch and display errors
     errorpopup.value=false
@@ -300,7 +300,7 @@ const newuser2_formdata = async () => {
 
 const getdata = async (appid) => {
 
-  cameramain.value=false
+ 
 loading.value = true;
 errormessage.value = null
 const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
@@ -321,8 +321,12 @@ try {
     name.value=userdata_res[0].Name
     address.value=userdata_res[0].Address1
     place.value=userdata_res[0].Place
-    showphoto.value=true
     capturedImage.value=userdata_res[0].nPerson
+    if(capturedImage.value){
+      cameramain.value=false
+      showphoto.value=true
+    }
+    
     
 
   }
