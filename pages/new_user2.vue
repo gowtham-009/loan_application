@@ -1,303 +1,277 @@
 <template>
-  <div  v-if="isAuthenticated">
-    <div class="w-100 bg-blue" :style="{ height: boxex1Height + 'px' }"> </div>
-    <div class="w-100" :style="{ height: boxex2Height + 'px' }">
-      <div class="w-100 d-flex" :style="{ height: new_us + 'px' }">
-        <div class="w-100">
-          <v-btn variant="plain" class="text-blue font-weight-bold text-h6" block>New User</v-btn>
+  <div v-if="isAuthenticated">
+
+    <form @submit.prevent="handleSubmit">
+    <div v-if="errorpopup" style="position: absolute; width: 100%; z-index: 10;">
+          <v-alert title="Input fields are Required !" type="error">
+            {{ errormessage }}
+          </v-alert>
+         
         </div>
-     
+        <div v-if="loading" class="w-100 d-flex justify-center">
+        </div>
+    <div class="bg-blue d-flex justify-center align-center" :style="{ height: box1Height + 'px' }">
+      <span class="text-h4">New User2</span>
+    </div>
+    <div class="pa-2 " :style="{ height: box2Height + 'px' }">
+      <v-text-field v-model="name" :rules="namerules" label="Name" type="text" hide-details  class="w-100 mt-2"
+        variant="solo-filled" @input="formatToUppercase"></v-text-field>
+
+      <v-text-field v-model="address" :rules="addressrules" label="Address" type="text" hide-details 
+        class="w-100 mt-2" variant="solo-filled" @input="formatToUppercase"></v-text-field>
+
+      <v-text-field v-model="place" :rules="placerules" label="Place" type="text" hide-details 
+        class="w-100 mt-2" variant="solo-filled" @input="formatToUppercase"></v-text-field>
+
+
+      <div class="w-100 pa-1 mt-1 d-flex justify-center align-center flex-column" v-if="cameramain">
+        <div class="w-100 d-flex justify-start">
+          <p class="text-left"> NProof</p>
+        </div>
+        <!-- Open Camera Button -->
+        <div v-if="cameraoperation" class="w-75 rounded bg-green-darken-4 d-flex justify-center align-center"
+          style="height: 200px;">
+          <v-btn @click="openCamera" block class="bg-green-darken-4" prepend-icon="mdi mdi-camera-flip-outline"
+            text="Open Camera / Upload Files" variant="flat"></v-btn>
+        </div>
+        <!-- Camera Container -->
+        <div v-if="cameracontainer" class="w-75 rounded d-flex justify-center align-center flex-column">
+          <video ref="videoElement" autoplay class="w-100 h-100"></video>
+          <div class="w-100 d-flex ga-2 justify-center">
+            <v-btn prepend-icon="mdi mdi-camera-flip-outline" @click="flipCamera" class="mt-2 bg-green-darken-4"
+              text="Flip" variant="flat"></v-btn>
+            <v-btn prepend-icon="mdi mdi-camera-enhance" @click="captureImage" class="mt-2 bg-gray-darken-4"
+              text="Capture" variant="flat"></v-btn>
+          </div>
+        </div>
+        <!-- Display Captured Image -->
+        <div v-if="capturedImage" class="w-75">
+          <img :src="capturedImage" alt="Captured Photo" class="w-100 rounded shadow-lg" />
+          <div class="w-100 d-flex ga-2 justify-center">
+            <v-btn prepend-icon="mdi mdi-camera-flip-outline" @click="dialog = true" class="mt-2 bg-indigo-darken-4"
+              text="Expand" variant="flat"></v-btn>
+            <v-btn prepend-icon="mdi mdi-camera-enhance" @click="recapturephoto" class="mt-2 bg-gray-darken-4"
+              text="Re-Capture" variant="flat"></v-btn>
+          </div>
+        </div>
+        <canvas ref="canvasElement" style="display: none;"></canvas>
       </div>
-      <div class="w-100" :style="{ height: form + 'px' }">
-        <v-form ref="form" v-model="isValid" @submit.prevent="handleSubmit" :style="{ height: form + 'px' }" class="w-100 d-flex justify-space-between flex-column" >
-          
-          <div class="w-100 pa-1 scroller">
-           <v-row  class="mt-3">
-            <v-col cols="12" class="pt-2" >
-              <v-text-field
-               v-model="name"
-              :rules="namerules"
-              label="Name"
-              placeholder="Enter a name"
-              type="text"
-              hide-details
-              required
-              class="w-100"
-              variant="solo-filled"
-               @input="formatToUppercase"
-            ></v-text-field>
 
-            <v-text-field
-                  v-model="address"
-                  counter="1000"
-                   maxlength="1000"
-                  :rules="addressrules"
-                  label="Address"
-                  placeholder="Enter a address"
-                  hide-details
-                  required
-                  class="w-100 mt-1"
-               variant="solo-filled"
-                ></v-text-field>
-
-                <v-text-field
-                  v-model="place"
-                   counter="150"
-                   maxlength="150"
-                  :rules="placerules"
-                  label="Place"
-                  placeholder="Enter a place"
-                  hide-details
-                  required
-                  class="w-100 mt-1"
-                   variant="solo-filled"
-                    @input="formatToUppercasep"
-                ></v-text-field>
-            </v-col>
-           </v-row>
-            <v-row class="d-flex flex-column ga-0" style="margin-top: 2px;">
-              <v-col class="d-flex flex-column ga-2" cols="12">
-                <div v-if="show" class="w-100 pa-1" style="border: 2px solid red;">
-                  <h5>Capture nProof</h5>
-
-                 
-                  <img :src="imageP" alt="Captured Image" class="captured-image w-100" style="border-radius: 10px;" />
-                  <v-btn type="btn" @click="recapture()" class="btn bg-red" block>RE-CAPTURE</v-btn>
-               
-                </div>
-
-                <div v-if="camcontainer" class="w-100 d-flex flex-column">
-                  <h5>Capture nProof</h5>
-                  <div class="camera-container d-flex flex-column align-center justify-center">
-                    <v-btn
-                      color="#33691E"
-                      width="330"
-                      prepend-icon="mdi mdi-camera"
-                      height="200"
-                      v-if="!cameraActive"
-                      @click="openCamera"
-                    >
-                      Open Camera / Upload File
-                    </v-btn>
-                    <div v-if="cameraActive" class="credit-card-container">
-                      <template v-if="capturedImage">
-                        <img :src="capturedImage" alt="Captured Image" class="captured-image" style="border-radius: 10px;" />
-                      </template>
-                      <template v-else>
-                        <video ref="video" class="video-feed" autoplay playsinline style="border-radius: 10px;"></video>
-                      </template>
-                    </div>
-                    <div v-if="cameraActive" class="controls">
-                      <div class="w-100 d-flex ga-3 justify-center align-center pa-4">
-                        <div class="w-100">
-                          <v-btn
-                            block
-                            :color="capturedImage ? '#0277BD' : '#33691E'"
-                            prepend-icon="mdi mdi-camera-flip-outline"
-                            variant="flat"
-                            @click="capturedImage ? openDialog() : switchCamera"
-                          >
-                            {{ capturedImage ? 'Expand' : 'Flip' }}
-                          </v-btn>
-                        </div>
-                        <div class="w-100">
-                          <v-btn
-                            variant="tonal"
-                            block
-                            prepend-icon="mdi mdi-camera-enhance"
-                            v-if="!capturedImage"
-                            @click="captureImage"
-                          >
-                            Capture Image
-                          </v-btn>
-                          <v-btn
-                            block
-                            class="flex-grow-1"
-                            variant="flat"
-                            prepend-icon="mdi mdi-camera-retake"
-                            v-if="capturedImage"
-                            @click="retakeImage"
-                          >
-                            Re-Capture Image
-                          </v-btn>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </v-col>
-            </v-row>
-
-           
+      <div class="w-full pa-2" v-if="showphoto" >
+            <img :src="capturedImage" alt="Captured Photo" class="w-100 rounded shadow-lg" />
+            <v-btn  block @click="retake()"  class="bg-red text-white">Re Take</v-btn>
           </div>
-
-          <!-- Form Action Buttons -->
-          <div class="w-100 d-flex">
-            <div class="w-100 d-flex justify-center align-end">
-              <v-btn class="bg-yellow text-black" block >Reset</v-btn>
-            </div>
-            <div class="w-100 d-flex justify-center align-end">
-              <v-btn
-                block 
-                type="submit"
-                class="bg-green text-white"
-              >
-                Next
-              </v-btn>
-            </div>
-          </div>
-        
-        </v-form>
+    </div>
+ 
+    <div class=" d-flex ga-1 d-flex gap-2" :style="{ height: box3Height + 'px' }">
+      <div class="w-100 d-flex justify-center align-end">
+        <v-btn @click="back()" class="bg-yellow text-black" block>Back</v-btn>
+      </div>
+      <div class="w-100 d-flex justify-center align-end">
+        <v-btn block type="submit" class="bg-green text-white">
+          Next
+        </v-btn>
       </div>
     </div>
 
-    <!-- Dialog for displaying captured image -->
-    <v-dialog v-model="dialogVisible" class="h-75 pa-1">
-      <v-card class="h-screen pa-0">
-        <img :src="capturedImage" alt="Captured Image" class="h-100" />
+  </form>
+    <v-dialog v-model="dialog" width="auto">
+      <v-card max-width="400">
+        <img :src="capturedImage" alt="Captured Photo" class="w-100 rounded shadow-lg" />
       </v-card>
     </v-dialog>
   </div>
 </template>
 
-<script>
-import { ref ,onBeforeMount} from 'vue';
-import { useRouter } from 'vue-router'
-
-export default {
-
-  setup() {
-   
-
-const isAuthenticated = ref(false)
-
-onBeforeMount(() => {
-  const token = localStorage.getItem('token')
-  
-  if (!token) {
-   
-    router.replace('/login')
-  } else {
-    
-    isAuthenticated.value = true
-  }
-})
-    const name=ref('');
-    const address = ref('');
-    const place = ref('');
-    const capturedImage = ref('');
-    const dialogVisible = ref(false);
-    const show=ref(true)
-    const camcontainer=ref(true)
-    const imageP=ref('')
-    
-
-    const namerules=[
-    (v) => !!v || "Name is required",
+<script setup>
+import { useRouter, useRoute } from 'vue-router';
+import CryptoJS from 'crypto-js';
+import { errorMessages } from 'vue/compiler-sfc';
+const cameramain=ref(true)
+const showphoto=ref(false)
+const router = useRouter();
+const route = useRoute();
+const namerules = [
+  (v) => !!v || "Name is required",
   (v) => /^[A-Z]+$/.test(v) || "Only alphabetic characters are allowed",
   (v) => v.length <= 150 || "Maximum 150 characters allowed",
-    ]
-    const addressrules=[
-    v => !!v || 'Address is required',
-        v => v.length <= 1000 || 'Maximum 1000 characters allowed',
-        v => /^[\w\s\W]+$/.test(v) || 'Only alphanumeric and special characters are allowed',
-    ]
+]
+const addressrules = [
+  v => !!v || 'Address is required',
+  v => v.length <= 1000 || 'Maximum 1000 characters allowed',
+  v => /^[\w\s\W]+$/.test(v) || 'Only alphanumeric and special characters are allowed',
+]
 
-    const placerules=[
-      (v) => !!v || 'place is required',
-        v => /^[A-Z]+$/.test(v) || 'Only alphabetic characters are allowed',
-        v => v.length <= 150 || 'Maximum 150 characters allowed',
-    ]
-    
-    const route = useRoute();
-    const queryValue = ref('');
+const placerules = [
+  (v) => !!v || 'place is required',
+  v => /^[A-Z]+$/.test(v) || 'Only alphabetic characters are allowed',
+  v => v.length <= 150 || 'Maximum 150 characters allowed',
+]
 
 
-    onMounted(() => {
-      queryValue.value = route.query.value || ''; 
-    });
-    const uniqueid = computed(() => queryValue.value);
-    
-   
-    
-
-
-
-    const loading=ref('')
-    const error=ref(null)
-    const router = useRouter()
-    const imagePath=ref('')
-
-    const getdatauser=async()=>{
-      loading.value=true
-      const apiurl='https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
-      const formdata=new FormData()
-      formdata.append('appid',  route.query.value)
-      try {
-        const response=await fetch(apiurl, {
-          method:'POST',
-          body:formdata
-        })
-        if(!response.ok){
-          throw new Error(`your request failed please try again! ${response.status}`)
-        }
-        else{
-          const data=await response.json()
-          name.value=data[0].Name
-          address.value=data[0].Address1
-          place.value=data[0].Place
-          imageP.value=data[0].nPerson
-
-          if(imageP.value){
-            show.value=true
-            camcontainer.value=false
-          }
-          else{
-            show.value=false
-            camcontainer.value=true
-          }
-
-        
-        
-        }
-      } catch (error) {
-         error.value=error.message
-      }
-      finally{
-        loading.value=false
-      }
+const secretKey = "appidsecreatekey001";
+const decryptedValue = ref('');
+onMounted(() => {
+    const encryptedData = route.query.data;
+    if (encryptedData) {
+      const bytes = CryptoJS.AES.decrypt(decodeURIComponent(encryptedData), secretKey);
+      decryptedValue.value = bytes.toString(CryptoJS.enc.Utf8);
+      getdata(decryptedValue.value)
     }
+  });
+const loading=ref(false)
+const errorpopup=ref(false)
+const errormessage=ref(null)
+const address = ref('');
+const place = ref('');
+const name = ref('');
 
-    getdatauser()
 
 
-    const handleSubmit = async () => {
-  // Input validation
-  if (!uniqueid.value || !name.value || !address.value || !place.value || (!imagePath.value && !imageP.value)) {
-    error.value = 'Please fill in all fields, including an image.';
+
+const isAuthenticated = ref(false);
+const cameraoperation = ref(true);
+const cameracontainer = ref(false);
+const videoElement = ref(null);
+const canvasElement = ref(null);
+const capturedImage = ref(null);
+
+const dialog = ref(false)
+
+const deviceHeight = ref(0)
+const box1Height = ref(0)
+const box2Height = ref(0)
+const box3Height = ref(0)
+
+const updateSizes = () => {
+  deviceHeight.value = window.innerHeight
+  box1Height.value = deviceHeight.value * 0.05 // 8% height
+  box2Height.value = deviceHeight.value * 0.90 // 92% height
+  box3Height.value = deviceHeight.value * 0.05
+
+}
+
+onMounted(() => {
+  updateSizes()
+  window.addEventListener('resize', updateSizes) // Update sizes on window resize
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateSizes) // Clean up event listener
+})
+
+
+const formatToUppercase = () => {
+  name.value = name.value.toUpperCase();
+  address.value = address.value.toUpperCase();
+  place.value = place.value.toUpperCase();
+};
+
+
+const facingMode = ref("user"); // "user" for front camera, "environment" for back camera
+let stream = null;
+
+const openCamera = async () => {
+  cameraoperation.value = false;
+  cameracontainer.value = true;
+  capturedImage.value = null;
+  await startCamera();
+};
+
+const startCamera = async () => {
+  try {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode.value } });
+    if (videoElement.value) {
+      videoElement.value.srcObject = stream;
+    }
+  } catch (error) {
+    console.error("Error accessing camera:", error);
+  }
+};
+
+const flipCamera = async () => {
+  facingMode.value = facingMode.value === "user" ? "environment" : "user";
+  await startCamera();
+};
+
+const captureImage = () => {
+  if (!videoElement.value || !canvasElement.value) return;
+  const canvas = canvasElement.value;
+  const video = videoElement.value;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  capturedImage.value = canvas.toDataURL('image/png');
+  cameracontainer.value = false;
+};
+
+const recapturephoto = async () => {
+  capturedImage.value = null;
+  cameraoperation.value = false;
+  cameracontainer.value = true;
+  await startCamera();
+};
+
+onBeforeMount(() => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    router.replace('/login');
+  } else {
+    isAuthenticated.value = true;
+  }
+});
+
+onBeforeUnmount(() => {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+});
+
+const handleSubmit = () => {
+  if (!name.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Name is required';
     return;
   }
-
-  // Proceed with the form submission
-  await newuser2_formdata();
+  if (!address.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Address is Required';
+    return;
+  }
+  if (!place.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Place is required';
+    return;
+  }
+  if (!capturedImage.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Proof photo is Required';
+    return;
+  }
+  errorpopup.value = false; 
+  errormessage.value = '';  
+  newuser2_formdata()
 };
 
 const newuser2_formdata = async () => {
+
   loading.value = true;
-  error.value = null;
+  errorMessages.value = null;
 
   const newuser2_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/newuser2_insert.php';
   const formdata = new FormData();
 
   // Append form fields
-  formdata.append('appid', uniqueid.value);
+  formdata.append('appid', decryptedValue.value);
   formdata.append('name', name.value);
   formdata.append('address1', address.value);
   formdata.append('place', place.value);
-
-  // Append the image path conditionally
-  const imageValue = imagePath.value || imageP.value; // Use imagePath first, fallback to imageP
-  formdata.append('nperson', imageValue);
+  formdata.append('nperson', capturedImage.value);
 
   try {
     const response = await fetch(newuser2_apiurl, {
@@ -315,154 +289,70 @@ const newuser2_formdata = async () => {
     console.log('User data response:', userdata_res);
   } catch (err) {
     // Catch and display errors
-    error.value = err.message;
+    errorpopup.value=false
+    errormessage.value = err.message;
   } finally {
-    // Reset loading state
+    
     loading.value = false;
   }
 };
 
 
-    const formatToUppercase = () => {
-  name.value = name.value.toUpperCase();
-};
+const getdata = async (appid) => {
 
-const formatToUppercasep = () => {
-  place.value = place.value.toUpperCase();
-};
+  cameramain.value=false
+loading.value = true;
+errormessage.value = null
+const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
+const formdata = new FormData()
+formdata.append('appid', appid);
 
-const recapture=()=>{
-  show.value=false
-  camcontainer.value=true
+
+try {
+  const response = await fetch(newuser1_apiurl, {
+    method: 'POST',
+    body: formdata
+  })
+  if (!response.ok) {
+    throw new Error('Failed to submit data. Please check your inputs.');
+  }
+  else {
+    const userdata_res = await response.json()
+    name.value=userdata_res[0].Name
+    address.value=userdata_res[0].Address1
+    place.value=userdata_res[0].Place
+    showphoto.value=true
+    capturedImage.value=userdata_res[0].nPerson
+    
+
+  }
+
 }
-
-    return {
-      isAuthenticated,
-      name,
-      namerules,
-      address,
-      addressrules,
-      place,
-      placerules,
-      capturedImage,
-      dialogVisible,
-      queryValue,
-      uniqueid,
-      imagePath,
-      router,
-      newuser2_formdata,
-      handleSubmit,
-      formatToUppercase,
-      formatToUppercasep,
-
-      show,
-      imageP,
-      camcontainer,
-      recapture,
-
-      
-     
-    };
-  },
-
-  data() {
-    return {
-      deviceWidth: 0,
-      deviceHeight: 0,
-      boxex1Height: 0,
-      boxex2Height: 0,
-      new_us: 0,
-      form: 0,
-      videoStream: null,
-      cameraFacing: 'environment',
-      cameraActive: false,
-
-      
-    };
-  },
-
-  mounted() {
-    this.updateDeviceDimensions();
-    window.addEventListener('resize', this.updateDeviceDimensions);
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.updateDeviceDimensions);
-  },
+catch (err) {
+  errorpopup.value=false
+  errormessage.value = err.message
+}
+finally {
+  loading.value = false
+}
+}
+const retake=()=>{
+      cameramain.value=true
+      showphoto.value=false
+      capturedImage.value=''
+      console.log( capturedImage.value)
+    }
   
-  methods: {
-    updateDeviceDimensions() {
-      this.deviceWidth = window.innerWidth;
-      this.deviceHeight = window.innerHeight;
+const back = () => {
+  const newValue = decryptedValue.value 
+  
 
-      this.boxex1Height = Math.floor(this.deviceHeight * 0.05);
-      this.boxex2Height = Math.floor(this.deviceHeight * 0.95);
-      // box---2
-      this.new_us = Math.floor(this.boxex2Height * 0.08);
-      this.form = Math.floor(this.boxex2Height * 0.92);
-    },
-    async startCamera() {
-      const constraints = {
-        video: {
-          facingMode: this.cameraFacing,
-          width: 300,
-          height: 180,
-        },
-      };
-      try {
-        this.videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        this.$refs.video.srcObject = this.videoStream;
-      } catch (error) {
-        console.error('Error accessing the camera:', error);
-      }
-    },
-    openCamera() {
-      this.cameraActive = true;
-      this.startCamera();
-    },
-    switchCamera() {
-      this.cameraFacing = this.cameraFacing === 'user' ? 'environment' : 'user';
-      if (this.videoStream) {
-        this.videoStream.getTracks().forEach(track => track.stop());
-      }
-      this.startCamera();
-    },
-    captureImage() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 300;
-      canvas.height = 180;
-      const context = canvas.getContext('2d');
-      context.drawImage(this.$refs.video, 0, 0, canvas.width, canvas.height);
-      this.capturedImage = canvas.toDataURL('image/png');
-      this.imagePath = this.capturedImage.replace(/^,+/, ''); 
-      this.videoStream.getTracks().forEach(track => track.stop());
-    },
-    retakeImage() {
-      this.capturedImage = '';
-      this.startCamera();
-    },
-    openDialog() {
-      this.dialogVisible = true;
-    },
-   
-  },
+  const encryptedValue = CryptoJS.AES.encrypt(newValue, secretKey).toString();
+
+ 
+  router.push({ path: '/new_user', query: { data: encodeURIComponent(encryptedValue) } });
 };
+
 </script>
 
-<style scoped>
-.scroller {
-  overflow: hidden;
-  overflow-y: scroll;
-}
-.main_container {
-  display: flex;
-  flex-direction: column;
-}
-.video-feed {
-  width: 100%;
-  height: auto;
-}
-.captured-image {
-  max-width: 100%;
-  height: auto;
-}
-</style>
+<style></style>

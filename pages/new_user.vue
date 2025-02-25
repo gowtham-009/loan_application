@@ -1,12 +1,14 @@
 <template>
   <div v-if="isAuthenticated">
+   
     <form @submit.prevent="handleEventFun">
       <div v-if="errorpopup" style="position: absolute; width: 100%; z-index: 10;">
           <v-alert title="Input fields are Required !" type="error">
             {{ errormessage }}
           </v-alert>
-          <div v-if="loading" class="w-100 d-flex justify-center">
-          </div>
+         
+        </div>
+        <div v-if="loading" class="w-100 d-flex justify-center">
         </div>
       <div class="w-100">
 
@@ -29,7 +31,7 @@
             @input="proofid = proofid.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16)"></v-text-field>
 
 
-          <div class="w-100 pa-1 mt-1 d-flex justify-center align-center flex-column">
+          <div class="w-100 pa-1 mt-1 d-flex justify-center align-center flex-column" v-if="cameramain">
             <div class="w-100 d-flex justify-start">
               <p class="text-left">Capture Proof</p>
             </div>
@@ -61,12 +63,15 @@
             </div>
             <canvas ref="canvasElement" style="display: none;"></canvas>
           </div>
-
+          <div class="w-full pa-2" v-if="showphoto">
+            <img :src="capturedImage" alt="Captured Photo" class="w-100 rounded shadow-lg" />
+            <v-btn  block @click="retake()"  class="bg-red text-white">Re Take</v-btn>
+          </div>
 
         </div>
         <div class=" d-flex gap-2" :style="{ height: box3Height + 'px' }">
           <div class="w-100 d-flex justify-center align-end">
-            <v-btn class="bg-yellow text-black" block>Reset</v-btn>
+            <v-btn @click="reset()" class="bg-yellow text-black" block>Reset</v-btn>
           </div>
           <div class="w-100 d-flex justify-center align-end">
             <v-btn  block type="submit" class="bg-green text-white">
@@ -83,13 +88,17 @@
       </v-card>
     </v-dialog>
   </div>
+
 </template>
 
 <script setup>
 import { ref, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import {  useRouter, useRoute } from 'vue-router';
 import CryptoJS from 'crypto-js';
-
+const cameramain=ref(true)
+const showphoto=ref(false)
+const router = useRouter();
+ const route = useRoute();
 const errorpopup=ref(false)
 const errormessage = ref('')
 const loading = ref('')
@@ -113,6 +122,8 @@ const proofRules = [
 
 ];
 
+
+
 const validateInput = () => {
   phoneNumber.value = phoneNumber.value.replace(/\D/g, "").slice(0, 10);
 };
@@ -130,6 +141,7 @@ const getFormattedDateTime = () => {
 
     const currentDateTime = ref(getFormattedDateTime());
 
+  
 
 const selectedOption = ref('');
 const options = ref([
@@ -207,7 +219,7 @@ const recapturephoto = async () => {
   cameracontainer.value = true;
   await startCamera();
 };
-const router = useRouter();
+
 onBeforeMount(() => {
   const token = localStorage.getItem('token');
 
@@ -224,7 +236,15 @@ onBeforeUnmount(() => {
   }
 });
 
-const handleEventFun = () => {
+const handleEventFun=()=>{
+  if(decryptedValue.value){
+    handleeventupdate2()
+  }
+  else{
+    handleeventinsert1()
+  }
+}
+const handleeventinsert1 = () => {
   if (!phoneNumber.value) {
     errorpopup.value = true;
     errormessage.value = 'Mobile number is required';
@@ -251,10 +271,36 @@ const handleEventFun = () => {
 };
 
 
-const secretKey = "appidsecreatekey001"; // Change this to a secure key
-const encryptData = (data) => {
-  return CryptoJS.AES.encrypt(data, secretKey).toString();
+const handleeventupdate2 = () => {
+  if (!phoneNumber.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Mobile number is required';
+    return;
+  }
+  if (!selectedOption.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Id Proof Type is Required';
+    return;
+  }
+  if (!proofid.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Proof ID is required';
+    return;
+  }
+  if (!capturedImage.value) {
+    errorpopup.value = true;
+    errormessage.value = 'Proof photo is Required';
+    return;
+  }
+  errorpopup.value = false; 
+  errormessage.value = '';  
+  update_form()
 };
+
+
+const secretKey = "appidsecreatekey001"; // Change this to a secure key
+const decryptedValue = ref('');
+
 
 const newuser_formdata = async () => {
       loading.value = true;
@@ -280,8 +326,8 @@ const newuser_formdata = async () => {
         else {
           const userdata_res = await response.json()
           appid.value = userdata_res.id
-          const encryptedAppId = encryptData(appid.value);
-          router.push({ name: 'new_user2', query: { value: encryptedAppId } });      
+          const encryptedValue = CryptoJS.AES.encrypt(appid.value, secretKey).toString();
+          router.push({ path: '/new_user2', query: { data: encodeURIComponent(encryptedValue) } });     
         }
 
       }
@@ -294,6 +340,116 @@ const newuser_formdata = async () => {
       }
     }
 
+
+    const reset=()=>{
+      phoneNumber.value=''
+      proofid.value=''
+      capturedImage.value=''
+      selectedOption.value=''
+      cameraoperation.value=true
+      cameracontainer.value=false
+      capturedImage.value=false
+
+    }
+
+
+
+    onMounted(() => {
+    const encryptedData = route.query.data;
+    if (encryptedData) {
+      const bytes = CryptoJS.AES.decrypt(decodeURIComponent(encryptedData), secretKey);
+      decryptedValue.value = bytes.toString(CryptoJS.enc.Utf8);
+      getdata(decryptedValue.value)
+    }
+  });
+
+
+  const getdata = async (appid) => {
+
+      cameramain.value=false
+      loading.value = true;
+      errormessage.value = null
+      const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
+      const formdata = new FormData()
+      formdata.append('appid', appid);
+
+
+      try {
+        const response = await fetch(newuser1_apiurl, {
+          method: 'POST',
+          body: formdata
+        })
+        if (!response.ok) {
+          throw new Error('Failed to submit data. Please check your inputs.');
+        }
+        else {
+          const userdata_res = await response.json()
+          phoneNumber.value=userdata_res[0].MobileNum
+          selectedOption.value=userdata_res[0].ProofType
+          proofid.value=userdata_res[0].ProofDetails
+          showphoto.value=true
+          capturedImage.value=userdata_res[0].nProof
+          
+
+        }
+
+      }
+      catch (err) {
+        errorpopup.value=false
+        errormessage.value = err.message
+      }
+      finally {
+        loading.value = false
+      }
+    }
+
+    const retake=()=>{
+      cameramain.value=true
+      showphoto.value=false
+      capturedImage.value=''
+      console.log( capturedImage.value)
+    }
+  
+
+    const update_form = async () => {
+      loading.value = true;
+      errormessage.value = null
+      const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
+      const formdata = new FormData()
+      formdata.append('update_appid', decryptedValue.value);
+      formdata.append('datetime', currentDateTime.value);
+      formdata.append('Mobilenum', phoneNumber.value);
+      formdata.append('ProofType', selectedOption.value);
+      formdata.append('Proofdetails', proofid.value)
+      formdata.append('Nproof',  capturedImage.value)
+      
+      
+    
+
+      try {
+        const response = await fetch(newuser1_apiurl, {
+          method: 'POST',
+          body: formdata
+        })
+        if (!response.ok) {
+          throw new Error('Failed to submit data. Please check your inputs.');
+        }
+        else {
+          const userdata_res = await response.json()
+          const encryptedValue = CryptoJS.AES.encrypt(decryptedValue.value, secretKey).toString();
+          router.push({ path: '/new_user2', query: { data: encodeURIComponent(encryptedValue) } });    
+        }
+
+      }
+      catch (err) {
+        errorpopup.value=true
+        errormessage.value = err.message
+      }
+      finally {
+        loading.value = false
+        router.push({ name: 'new_user2', query: { value: decryptedId } })
+      }
+    }
 
 </script>
 
