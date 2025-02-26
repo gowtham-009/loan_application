@@ -1,15 +1,19 @@
 <template>
   <div v-if="isAuthenticated">
    
-    <form @submit.prevent="handleEventFun">
+    <div class="d-flex justify-center h-screen d-flex justify-center align-center" v-if="loading">
+      <v-progress-circular color="purple" indeterminate></v-progress-circular>
+  </div>
+
+
+    <form @submit.prevent="handleEventFun" v-if="userform">
       <div v-if="errorpopup" style="position: absolute; width: 100%; z-index: 10;">
           <v-alert title="Input fields are Required !" type="error">
             {{ errormessage }}
           </v-alert>
          
         </div>
-        <div v-if="loading" class="w-100 d-flex justify-center">
-        </div>
+       
       <div class="w-100">
 
         <div class="bg-blue d-flex justify-center align-center" :style="{ height: box1Height + 'px' }">
@@ -101,7 +105,10 @@ const router = useRouter();
  const route = useRoute();
 const errorpopup=ref(false)
 const errormessage = ref('')
-const loading = ref('')
+
+const loading = ref(false)
+const userform=ref(true)
+
 const appid = ref('')
 const isAuthenticated = ref(false);
 const cameraoperation = ref(true);
@@ -304,6 +311,7 @@ const decryptedValue = ref('');
 
 const newuser_formdata = async () => {
       loading.value = true;
+      userform.value=false
       errormessage.value = null
       const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
       const formdata = new FormData()
@@ -359,6 +367,8 @@ const newuser_formdata = async () => {
     if (encryptedData) {
       const bytes = CryptoJS.AES.decrypt(decodeURIComponent(encryptedData), secretKey);
       decryptedValue.value = bytes.toString(CryptoJS.enc.Utf8);
+  
+    
       getdata(decryptedValue.value)
     }
   });
@@ -368,6 +378,7 @@ const newuser_formdata = async () => {
 
       cameramain.value=false
       loading.value = true;
+      userform.value=false
       errormessage.value = null
       const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/getuser_data.php'
       const formdata = new FormData()
@@ -400,6 +411,7 @@ const newuser_formdata = async () => {
       }
       finally {
         loading.value = false
+        userform.value=true
       }
     }
 
@@ -413,6 +425,7 @@ const newuser_formdata = async () => {
 
     const update_form = async () => {
       loading.value = true;
+      userform.value=false
       errormessage.value = null
       const newuser1_apiurl = 'https://vaanam.w3webtechnologies.co.in/loandb/newuser1_insert.php'
       const formdata = new FormData()
@@ -447,7 +460,7 @@ const newuser_formdata = async () => {
       }
       finally {
         loading.value = false
-        router.push({ name: 'new_user2', query: { value: decryptedId } })
+       
       }
     }
 

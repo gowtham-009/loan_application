@@ -256,7 +256,7 @@
   
                   <v-tabs-window-item  class="mt-3" value="tab-3" v-if="tab === 'tab-3'">
                     <v-btn  block class="bg-warning"@click="toggleDisabled">Edit</v-btn>
-                    <v-form  :class="{ 'disabled-box': isDisabled }" v-model="isValid" @submit.prevent>
+                    <v-form  :class="{ 'disabled-box': isDisabled }" v-model="isValid" @submit.prevent="handleSubmit3">
                     
                     <v-card>
                     <v-sheet class="w-100 pa-2">
@@ -356,15 +356,8 @@
                             </v-col>
                         </v-row>
                     </div>
-                    <div class="w-100 mt-2 d-flex ga-2">
-                        <div class="w-100">
-                            <v-btn class="bg-indigo text-white" @click="handleSubmit3('update')" type="submit" block>Update</v-btn>
-
-                        </div>
-                        <div class="w-100">
-                            <v-btn class="bg-yellow text-black" @click="handleSubmit3('insert')" type="submit" block>Insert</v-btn>
-
-                        </div>
+                    <div class="w-100 mt-2">
+                       <v-btn class="bg-indigo text-white" @click="dialog2 = true" type="submit" block>Update</v-btn>
                     </div>
                   </v-card>
   
@@ -595,37 +588,41 @@
   const isDisabled = ref(false);
   const isValid = ref(false);
   
+  const setdata = async()=>{
+    loading_d.value = true;
+        error_d.value = null;
+        const apiurl_d = 'http://vaanam.w3webtechnologies.co.in/loandb/setting_get.php';
+        try {
+          const response_d = await fetch(apiurl_d, {
+            method: 'GET',
+          });
+          if (!response_d.ok) {
+            throw new Error('Failed to fetch data. Please check your inputs.');
+          }
+          const getdata = await response_d.json();
+          otselectedOption.value=getdata[0].ExtraDays
+           month.value=getdata[0].AdvanceMonths
+           ysselectedOption.value=getdata[0].HandOver
+           calselectedOption.value=getdata[0].CalculationMethod
+           govtrate.value=getdata[0].GovtRate
   
-  const handleSubmit3 = async (typemode) => {
-    if(typemode==='update'){
-        if (!otselectedOption.value || !month.value || !ysselectedOption.value || !calselectedOption.value || !govtrate.value) {
+        } catch (err) {
+          error.value = err.message;
+        } finally {
+          loading.value = false;
+        }
+  }
+  setdata()
+  
+  const handleSubmit3 = async () => {
+    if (!otselectedOption.value || !month.value || !ysselectedOption.value || !calselectedOption.value || !govtrate.value) {
       error.value = 'Please fill in all fields';
       return;
     }
   
     await updatedata();
-    }
-
-    if(typemode==='insert'){
-        if (!otselectedOption.value || !month.value || !ysselectedOption.value || !calselectedOption.value || !govtrate.value) {
-      error.value = 'Please fill in all fields';
-      return;
-    }
-  
-    await settinginsertdata();
-    }
-  
   };
   
-  const getFormattedDateTime = () => {
-      const date = new Date();
-      const formattedDate = date.toISOString().split('T')[0]; // dd-mm-yyyy
-      const formattedTime = date.toLocaleTimeString('en-GB', { hour12: false }); // hh:mm:ss
-      return `${formattedDate} ${formattedTime}`;
-    };
-
-    const currentDateTime = ref(getFormattedDateTime());
-
   const loading_u=ref(true)
   const error_u=ref(null)
   const updatedata = async()=>{
@@ -633,7 +630,6 @@
     error_u.value=null
     const apiurl_u = 'http://vaanam.w3webtechnologies.co.in/loandb/setting.php';
     const updateformdata = new FormData();
-    updateformdata.append('datetime', currentDateTime.value);
         updateformdata.append('ExtraDays', otselectedOption.value);
         updateformdata.append('AdvanceMonths', month.value);
         updateformdata.append('HandOver', ysselectedOption.value);
@@ -657,41 +653,7 @@
           error_u.value = err.message;
         } finally {
           loading_u.value = false;
-         
-        }
-  
-  }
-
-  const settinginsertdata = async()=>{
-    loading_u.value=true
-    error_u.value=null
-    const apiurl_u = 'http://vaanam.w3webtechnologies.co.in/loandb/settinginsert.php';
-    const updateformdata = new FormData();
-    updateformdata.append('datetime', currentDateTime.value);
-        updateformdata.append('ExtraDays', otselectedOption.value);
-        updateformdata.append('AdvanceMonths', month.value);
-        updateformdata.append('HandOver', ysselectedOption.value);
-        updateformdata.append('CalculationMethod', calselectedOption.value);
-        updateformdata.append('GovtRate', govtrate.value);
-  
-        try {
-          const response_u = await fetch(apiurl_u, {
-            method: 'POST',
-            body: updateformdata,
-          });
-  
-          if (!response_u.ok) {
-            throw new Error('Failed to submit data. Please check your inputs.');
-          }
-  
-          const data_u = await response_u.json();
-          data_u.value=data_u
-  
-        } catch (err) {
-          error_u.value = err.message;
-        } finally {
-          loading_u.value = false;
-         
+          setdata()
         }
   
   }
@@ -704,33 +666,6 @@
   const loading_search = ref(true);
   const error_search = ref(null);
   const res = ref([]); // Store filtered data
-
-  
-const setdata = async()=>{
-  loading_d.value = true;
-      error_d.value = null;
-      const apiurl_d = 'http://vaanam.w3webtechnologies.co.in/loandb/setting_get.php';
-      try {
-        const response_d = await fetch(apiurl_d, {
-          method: 'GET',
-        });
-        if (!response_d.ok) {
-          throw new Error('Failed to fetch data. Please check your inputs.');
-        }
-        const getdata = await response_d.json();
-        otselectedOption.value=getdata[0].ExtraDays
-         month.value=getdata[0].AdvanceMonths
-         ysselectedOption.value=getdata[0].HandOver
-         calselectedOption.value=getdata[0].CalculationMethod
-         govtrate.value=getdata[0].GovtRate
-
-      } catch (err) {
-        error.value = err.message;
-      } finally {
-        loading.value = false;
-      }
-}
-setdata()
   
   const search_filter_data = async () => {
         loading_search.value = true;
@@ -891,7 +826,7 @@ setdata()
         blockInvalidChar,
         data_insert,
         resetform,
-     
+        setdata,
         updatedata,
         handleSubmit3,
         delete_interest_id,
