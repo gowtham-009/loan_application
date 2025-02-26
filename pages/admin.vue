@@ -604,6 +604,7 @@
     }
   
     await updatedata();
+    alert('successfully Updated')
     }
 
     if(typemode==='insert'){
@@ -613,6 +614,7 @@
     }
   
     await settinginsertdata();
+    alert('successfully inserted')
     }
   
   };
